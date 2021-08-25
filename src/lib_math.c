@@ -50,9 +50,9 @@ LJLIB_ASM_(math_modf)
 
 LJLIB_ASM(math_log)		LJLIB_REC(math_log)
 {
-  double x = lj_lib_checknum(L, 1);
+  float x = lj_lib_checknum(L, 1);
   if (L->base+1 < L->top) {
-    double y = lj_lib_checknum(L, 2);
+    float y = lj_lib_checknum(L, 2);
 #ifdef LUAJIT_NO_LOG2
     x = log(x); y = 1.0 / log(y);
 #else
@@ -107,10 +107,32 @@ LJLIB_PUSH(1e310) LJLIB_SET(huge)
 */
 
 /* Union needed for bit-pattern conversion between uint64_t and double. */
-typedef union { uint64_t u64; double d; } U64double;
+typedef union { uint64_t u64; float d; } U64double;
 
+<<<<<<< Updated upstream
 /* PRNG seeding function. */
 static void random_seed(PRNGState *rs, double d)
+=======
+/* Update generator i and compute a running xor of all states. */
+#define TW223_GEN(i, k, q, s) \
+  z = rs->gen[i]; \
+  z = (((z<<q)^z) >> (k-s)) ^ ((z&((uint64_t)(int64_t)-1 << (64-k)))<<s); \
+  r ^= z; rs->gen[i] = z;
+
+/* PRNG step function. Returns a double in the range 1.0 <= d < 2.0. */
+LJ_NOINLINE uint64_t LJ_FASTCALL lj_math_random_step(RandomState *rs)
+{
+  uint64_t z, r = 0;
+  TW223_GEN(0, 63, 31, 18)
+  TW223_GEN(1, 58, 19, 28)
+  TW223_GEN(2, 55, 24,  7)
+  TW223_GEN(3, 47, 21,  8)
+  return (r & U64x(000fffff,ffffffff)) | U64x(3ff00000,00000000);
+}
+
+/* PRNG initialization function. */
+static void random_init(RandomState *rs, float d)
+>>>>>>> Stashed changes
 {
   uint32_t r = 0x11090601;  /* 64-k[i] as four 8 bit constants. */
   int i;
@@ -133,13 +155,19 @@ LJLIB_CF(math_random)		LJLIB_REC(.)
   int n = (int)(L->top - L->base);
   PRNGState *rs = (PRNGState *)(uddata(udataV(lj_lib_upvalue(L, 1))));
   U64double u;
+<<<<<<< Updated upstream
   double d;
   u.u64 = lj_prng_u64d(rs);
+=======
+  float d;
+  if (LJ_UNLIKELY(!rs->valid)) random_init(rs, 0.0);
+  u.u64 = lj_math_random_step(rs);
+>>>>>>> Stashed changes
   d = u.d - 1.0;
   if (n > 0) {
 #if LJ_DUALNUM
     int isint = 1;
-    double r1;
+    float r1;
     lj_lib_checknumber(L, 1);
     if (tvisint(L->base)) {
       r1 = (lua_Number)intV(L->base);
@@ -148,13 +176,13 @@ LJLIB_CF(math_random)		LJLIB_REC(.)
       r1 = numV(L->base);
     }
 #else
-    double r1 = lj_lib_checknum(L, 1);
+    float r1 = lj_lib_checknum(L, 1);
 #endif
     if (n == 1) {
       d = lj_vm_floor(d*r1) + 1.0;  /* d is an int in range [1, r1] */
     } else {
 #if LJ_DUALNUM
-      double r2;
+      float r2;
       lj_lib_checknumber(L, 2);
       if (tvisint(L->base+1)) {
 	r2 = (lua_Number)intV(L->base+1);
@@ -163,7 +191,7 @@ LJLIB_CF(math_random)		LJLIB_REC(.)
 	r2 = numV(L->base+1);
       }
 #else
-      double r2 = lj_lib_checknum(L, 2);
+      float r2 = lj_lib_checknum(L, 2);
 #endif
       d = lj_vm_floor(d*(r2-r1+1.0)) + r1;  /* d is an int in range [r1, r2] */
     }

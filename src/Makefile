@@ -27,10 +27,10 @@ NODOTABIVER= 51
 DEFAULT_CC = gcc
 #
 # LuaJIT builds as a native 32 or 64 bit binary by default.
-CC= $(DEFAULT_CC)
+#CC= $(DEFAULT_CC)
 #
 # Use this if you want to force a 32 bit build on a 64 bit multilib OS.
-#CC= $(DEFAULT_CC) -m32
+CC= $(DEFAULT_CC) -m32
 #
 # Since the assembler part does NOT maintain a frame pointer, it's pointless
 # to slow down the C part by not omitting it. Debugging, tracebacks and
@@ -71,10 +71,10 @@ CCWARN= -Wall
 # as dynamic mode.
 #
 # Mixed mode creates a static + dynamic library and a statically linked luajit.
-BUILDMODE= mixed
+#BUILDMODE= mixed
 #
 # Static mode creates a static library and a statically linked luajit.
-#BUILDMODE= static
+BUILDMODE= static
 #
 # Dynamic mode creates a dynamic library and a dynamically linked luajit.
 # Note: this executable will only run when the library is installed!
@@ -87,7 +87,7 @@ BUILDMODE= mixed
 ##############################################################################
 # Enable/disable these features as needed, but make sure you force a full
 # recompile with "make clean", followed by "make".
-XCFLAGS=
+XCFLAGS= -DLUAJIT_OS=LUAJIT_OS_OTHER
 #
 # Permanently disable the FFI extension to reduce the size of the LuaJIT
 # executable. But please consider that the FFI library is compiled-in,
@@ -99,7 +99,7 @@ XCFLAGS=
 # enabled by default. Some other features that *might* break some existing
 # code (e.g. __pairs or os.execute() return values) can be enabled here.
 # Note: this does not provide full compatibility with Lua 5.2 at this time.
-#XCFLAGS+= -DLUAJIT_ENABLE_LUA52COMPAT
+XCFLAGS+= -DLUAJIT_ENABLE_LUA52COMPAT
 #
 # Disable the JIT compiler, i.e. turn LuaJIT into a pure interpreter.
 #XCFLAGS+= -DLUAJIT_DISABLE_JIT
@@ -128,7 +128,7 @@ XCFLAGS=
 # realloc usually doesn't return addresses in the right address range.
 # OTOH this option is mandatory for Valgrind's memcheck tool on x64 and
 # the only way to get useful results from it for all other architectures.
-#XCFLAGS+= -DLUAJIT_USE_SYSMALLOC
+XCFLAGS+= -DLUAJIT_USE_SYSMALLOC
 #
 # This define is required to run LuaJIT under Valgrind. The Valgrind
 # header files must be installed. You should enable debug information, too.
@@ -205,14 +205,17 @@ HOST_ACFLAGS= $(CCOPTIONS) $(HOST_XCFLAGS) $(TARGET_ARCH) $(HOST_CFLAGS)
 HOST_ALDFLAGS= $(LDOPTIONS) $(HOST_XLDFLAGS) $(HOST_LDFLAGS)
 HOST_ALIBS= $(HOST_XLIBS) $(LIBS) $(HOST_LIBS)
 
+include $(PS2SDK)/samples/Makefile.pref
+include $(PS2SDK)/samples/Makefile.eeglobal
+
 STATIC_CC = $(CROSS)$(CC)
 DYNAMIC_CC = $(CROSS)$(CC) -fPIC
-TARGET_CC= $(STATIC_CC)
-TARGET_STCC= $(STATIC_CC)
-TARGET_DYNCC= $(DYNAMIC_CC)
-TARGET_LD= $(CROSS)$(CC)
-TARGET_AR= $(CROSS)ar rcus
-TARGET_STRIP= $(CROSS)strip
+TARGET_CC= $(EE_CC)
+TARGET_STCC= $(EE_CC)
+TARGET_DYNCC= $(EE_CC) -fPIC
+TARGET_LD= $(CROSS)$(EE_CC)
+TARGET_AR= $(CROSS)$(EE_AR) rcus
+TARGET_STRIP= $(CROSS)$(EE_STRIP)
 
 TARGET_LIBPATH= $(or $(PREFIX),/usr/local)/$(or $(MULTILIB),lib)
 TARGET_SONAME= libluajit-$(ABIVER).so.$(MAJVER)
@@ -224,7 +227,7 @@ TARGET_XSHLDFLAGS= -shared -fPIC -Wl,-soname,$(TARGET_SONAME)
 TARGET_DYNXLDOPTS=
 
 TARGET_LFSFLAGS= -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
-TARGET_XCFLAGS= $(TARGET_LFSFLAGS) -U_FORTIFY_SOURCE
+TARGET_XCFLAGS= $(TARGET_LFSFLAGS) -U_FORTIFY_SOURCE -G0
 TARGET_XLDFLAGS=
 TARGET_XLIBS= -lm
 TARGET_TCFLAGS= $(CCOPTIONS) $(TARGET_XCFLAGS) $(TARGET_FLAGS) $(TARGET_CFLAGS)
@@ -305,6 +308,8 @@ endif
 # Target system detection.
 ##############################################################################
 
+TARGET_SYS= SunOS
+
 TARGET_SYS?= $(HOST_SYS)
 ifeq (Windows,$(TARGET_SYS))
   TARGET_STRIP+= --strip-unneeded
@@ -379,6 +384,7 @@ endif
 ifneq (,$(CCDEBUG))
   TARGET_STRIP= @:
 endif
+
 
 ##############################################################################
 # Files and pathnames.

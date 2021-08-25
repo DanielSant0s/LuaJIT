@@ -134,6 +134,7 @@
 |  addiu sp, sp, -CFRAME_SPACE
 |  sw ra, SAVE_GPR_+9*4(sp)
 |  sw r30, SAVE_GPR_+8*4(sp)
+<<<<<<< Updated upstream
 |   .FPU sdc1 f30, SAVE_FPR_+5*8(sp)
 |  sw r23, SAVE_GPR_+7*4(sp)
 |  sw r22, SAVE_GPR_+6*4(sp)
@@ -148,11 +149,28 @@
 |  sw r16, SAVE_GPR_+0*4(sp)
 |   .FPU sdc1 f22, SAVE_FPR_+1*8(sp)
 |   .FPU sdc1 f20, SAVE_FPR_+0*8(sp)
+=======
+|   swc1 f30, SAVE_FPR_+5*8(sp)
+|  sw r23, SAVE_GPR_+7*4(sp)
+|  sw r22, SAVE_GPR_+6*4(sp)
+|   swc1 f28, SAVE_FPR_+4*8(sp)
+|  sw r21, SAVE_GPR_+5*4(sp)
+|  sw r20, SAVE_GPR_+4*4(sp)
+|   swc1 f26, SAVE_FPR_+3*8(sp)
+|  sw r19, SAVE_GPR_+3*4(sp)
+|  sw r18, SAVE_GPR_+2*4(sp)
+|   swc1 f24, SAVE_FPR_+2*8(sp)
+|  sw r17, SAVE_GPR_+1*4(sp)
+|  sw r16, SAVE_GPR_+0*4(sp)
+|   swc1 f22, SAVE_FPR_+1*8(sp)
+|   swc1 f20, SAVE_FPR_+0*8(sp)
+>>>>>>> Stashed changes
 |.endmacro
 |
 |.macro restoreregs_ret
 |  lw ra, SAVE_GPR_+9*4(sp)
 |  lw r30, SAVE_GPR_+8*4(sp)
+<<<<<<< Updated upstream
 |   .FPU ldc1 f30, SAVE_FPR_+5*8(sp)
 |  lw r23, SAVE_GPR_+7*4(sp)
 |  lw r22, SAVE_GPR_+6*4(sp)
@@ -167,6 +185,22 @@
 |  lw r16, SAVE_GPR_+0*4(sp)
 |   .FPU ldc1 f22, SAVE_FPR_+1*8(sp)
 |   .FPU ldc1 f20, SAVE_FPR_+0*8(sp)
+=======
+|   lwc1 f30, SAVE_FPR_+5*8(sp)
+|  lw r23, SAVE_GPR_+7*4(sp)
+|  lw r22, SAVE_GPR_+6*4(sp)
+|   lwc1 f28, SAVE_FPR_+4*8(sp)
+|  lw r21, SAVE_GPR_+5*4(sp)
+|  lw r20, SAVE_GPR_+4*4(sp)
+|   lwc1 f26, SAVE_FPR_+3*8(sp)
+|  lw r19, SAVE_GPR_+3*4(sp)
+|  lw r18, SAVE_GPR_+2*4(sp)
+|   lwc1 f24, SAVE_FPR_+2*8(sp)
+|  lw r17, SAVE_GPR_+1*4(sp)
+|  lw r16, SAVE_GPR_+0*4(sp)
+|   lwc1 f22, SAVE_FPR_+1*8(sp)
+|   lwc1 f20, SAVE_FPR_+0*8(sp)
+>>>>>>> Stashed changes
 |  jr ra
 |  addiu sp, sp, CFRAME_SPACE
 |.endmacro
@@ -411,11 +445,17 @@ static void build_subroutines(BuildCtx *ctx)
   |.   sll TMP2, TMP2, 3
   |1:
   |  addiu TMP1, TMP1, -8
+<<<<<<< Updated upstream
   |   lw SFRETHI, HI(RA)
   |    lw SFRETLO, LO(RA)
   |    addiu RA, RA, 8
   |   sw SFRETHI, HI(BASE)
   |    sw SFRETLO, LO(BASE)
+=======
+  |   lwc1 f0, 0(RA)
+  |    addiu RA, RA, 8
+  |   swc1 f0, 0(BASE)
+>>>>>>> Stashed changes
   |  bnez TMP1, <1
   |.  addiu BASE, BASE, 8
   |
@@ -493,7 +533,11 @@ static void build_subroutines(BuildCtx *ctx)
   |  li TMP1, LJ_TFALSE
   |    li_vmstate INTERP
   |  lw PC, FRAME_PC(BASE)		// Fetch PC of previous frame.
+<<<<<<< Updated upstream
   |     .FPU cvt.d.s TOBIT, TOBIT
+=======
+  |     cvt.w.s TOBIT, TOBIT
+>>>>>>> Stashed changes
   |  addiu RA, BASE, -8			// Results start at BASE-8.
   |   addiu DISPATCH, DISPATCH, GG_G2DISP
   |  sw TMP1, HI(RA)			// Prepend false to error message.
@@ -567,7 +611,11 @@ static void build_subroutines(BuildCtx *ctx)
   |   subu RD, TMP1, BASE
   |     .FPU  mtc1 TMP3, TOBIT
   |    sb r0, L->status
+<<<<<<< Updated upstream
   |     .FPU  cvt.d.s TOBIT, TOBIT
+=======
+  |     cvt.w.s TOBIT, TOBIT
+>>>>>>> Stashed changes
   |    li_vmstate INTERP
   |   addiu RD, RD, 8
   |    st_vmstate
@@ -612,7 +660,11 @@ static void build_subroutines(BuildCtx *ctx)
   |  addu PC, PC, BASE
   |   subu NARGS8:RC, TMP1, BASE
   |  subu PC, PC, TMP2			// PC = frame delta + frame type
+<<<<<<< Updated upstream
   |     .FPU cvt.d.s TOBIT, TOBIT
+=======
+  |     cvt.w.s TOBIT, TOBIT
+>>>>>>> Stashed changes
   |    li_vmstate INTERP
   |     li TISNIL, LJ_TNIL
   |    st_vmstate
@@ -694,8 +746,12 @@ static void build_subroutines(BuildCtx *ctx)
   |->cont_cat:				// RA = resultptr, RB = meta base
   |  lw INS, -4(PC)
   |   addiu CARG2, RB, -16
+<<<<<<< Updated upstream
   |  lw SFRETHI, HI(RA)
   |    lw SFRETLO, LO(RA)
+=======
+  |   lwc1 f0, 0(RA)
+>>>>>>> Stashed changes
   |  decode_RB8a MULTRES, INS
   |   decode_RA8a RA, INS
   |  decode_RB8b MULTRES
@@ -705,11 +761,19 @@ static void build_subroutines(BuildCtx *ctx)
   |   subu CARG3, CARG2, TMP1
   |  sw SFRETHI, HI(CARG2)
   |  bne TMP1, CARG2, ->BC_CAT_Z
+<<<<<<< Updated upstream
   |.  sw SFRETLO, LO(CARG2)
+=======
+  |.  swc1 f0, 0(CARG2)
+>>>>>>> Stashed changes
   |  addu RA, BASE, RA
   |  sw SFRETHI, HI(RA)
   |  b ->cont_nop
+<<<<<<< Updated upstream
   |.  sw SFRETLO, LO(RA)
+=======
+  |.  swc1 f0, 0(RA)
+>>>>>>> Stashed changes
   |
   |//-- Table indexing metamethods -----------------------------------------
   |
@@ -733,8 +797,12 @@ static void build_subroutines(BuildCtx *ctx)
   |
   |->vmeta_tgetb:			// TMP0 = index
   |  addiu CARG3, DISPATCH, DISPATCH_GL(tmptv)
+<<<<<<< Updated upstream
   |  sw TMP0, LO(CARG3)
   |  sw TISNUM, HI(CARG3)
+=======
+  |  swc1 f0, 0(CARG3)
+>>>>>>> Stashed changes
   |
   |->vmeta_tgetv:
   |1:
@@ -746,11 +814,17 @@ static void build_subroutines(BuildCtx *ctx)
   |  // Returns TValue * (finished) or NULL (metamethod).
   |  beqz CRET1, >3
   |.  addiu TMP1, BASE, -FRAME_CONT
+<<<<<<< Updated upstream
   |  lw SFARG1HI, HI(CRET1)
   |   lw SFARG2HI, LO(CRET1)
   |  ins_next1
   |  sw SFARG1HI, HI(RA)
   |   sw SFARG2HI, LO(RA)
+=======
+  |  lwc1 f0, 0(CRET1)
+  |  ins_next1
+  |   swc1 f0, 0(RA)
+>>>>>>> Stashed changes
   |  ins_next2
   |
   |3:  // Call __index metamethod.
@@ -795,8 +869,12 @@ static void build_subroutines(BuildCtx *ctx)
   |
   |->vmeta_tsetb:			// TMP0 = index
   |  addiu CARG3, DISPATCH, DISPATCH_GL(tmptv)
+<<<<<<< Updated upstream
   |  sw TMP0, LO(CARG3)
   |  sw TISNUM, HI(CARG3)
+=======
+  |  swc1 f0, 0(CARG3)
+>>>>>>> Stashed changes
   |
   |->vmeta_tsetv:
   |1:
@@ -808,11 +886,18 @@ static void build_subroutines(BuildCtx *ctx)
   |  // Returns TValue * (finished) or NULL (metamethod).
   |  lw SFARG1HI, HI(RA)
   |  beqz CRET1, >3
+<<<<<<< Updated upstream
   |.  lw SFARG1LO, LO(RA)
   |  // NOBARRIER: lj_meta_tset ensures the table is not black.
   |  ins_next1
   |  sw SFARG1HI, HI(CRET1)
   |   sw SFARG1LO, LO(CRET1)
+=======
+  |.  lwc1 f0, 0(RA)
+  |  // NOBARRIER: lj_meta_tset ensures the table is not black.
+  |  ins_next1
+  |   swc1 f0, 0(CRET1)
+>>>>>>> Stashed changes
   |  ins_next2
   |
   |3:  // Call __newindex metamethod.
@@ -822,8 +907,12 @@ static void build_subroutines(BuildCtx *ctx)
   |  sw PC, -16+HI(BASE)		// [cont|PC]
   |   subu PC, BASE, TMP1
   |  lw LFUNC:RB, FRAME_FUNC(BASE)	// Guaranteed to be a function here.
+<<<<<<< Updated upstream
   |  sw SFARG1HI, 16+HI(BASE)		// Copy value to third argument.
   |   sw SFARG1LO, 16+LO(BASE)
+=======
+  |  swc1 f0, 16(BASE)			// Copy value to third argument.
+>>>>>>> Stashed changes
   |  b ->vm_call_dispatch_f
   |.  li NARGS8:RC, 24			// 3 args for func(t, k, v)
   |
@@ -868,13 +957,21 @@ static void build_subroutines(BuildCtx *ctx)
   |
   |->cont_ra:				// RA = resultptr
   |  lbu TMP1, -4+OFS_RA(PC)
+<<<<<<< Updated upstream
   |   lw SFRETHI, HI(RA)
   |    lw SFRETLO, LO(RA)
+=======
+  |   lwc1 f0, 0(RA)
+>>>>>>> Stashed changes
   |  sll TMP1, TMP1, 3
   |  addu TMP1, BASE, TMP1
   |   sw SFRETHI, HI(TMP1)
   |  b ->cont_nop
+<<<<<<< Updated upstream
   |.   sw SFRETLO, LO(TMP1)
+=======
+  |.  swc1 f0, 0(TMP1)
+>>>>>>> Stashed changes
   |
   |->cont_condt:			// RA = resultptr
   |  lw TMP0, HI(RA)
@@ -1073,7 +1170,12 @@ static void build_subroutines(BuildCtx *ctx)
   |   lw SFARG1LO, LO(BASE)
   |.endif
   |  beqz NARGS8:RC, ->fff_fallback
+<<<<<<< Updated upstream
   |.  sltiu AT, SFARG1HI, LJ_TISNUM
+=======
+  |.  lwc1 FARG1, 0(BASE)
+  |  sltiu AT, CARG3, LJ_TISNUM
+>>>>>>> Stashed changes
   |  beqz AT, ->fff_fallback
   |.endmacro
   |
@@ -1082,6 +1184,7 @@ static void build_subroutines(BuildCtx *ctx)
   |  sltiu AT, NARGS8:RC, 16
   |   lw SFARG1HI, HI(BASE)
   |  bnez AT, ->fff_fallback
+<<<<<<< Updated upstream
   |.  lw SFARG2HI, 8+HI(BASE)
   |  sltiu TMP0, SFARG1HI, LJ_TISNUM
   |.if FPU
@@ -1095,6 +1198,13 @@ static void build_subroutines(BuildCtx *ctx)
   |.else
   |   lw SFARG2LO, 8+LO(BASE)
   |.endif
+=======
+  |.  lw CARG4, 8+HI(BASE)
+  |  lwc1 FARG1, 0(BASE)
+  |  lwc1 FARG2, 8(BASE)
+  |  sltiu TMP0, CARG3, LJ_TISNUM
+  |  sltiu TMP1, CARG4, LJ_TISNUM
+>>>>>>> Stashed changes
   |  and TMP0, TMP0, TMP1
   |  beqz TMP0, ->fff_fallback
   |.endmacro
@@ -1121,10 +1231,15 @@ static void build_subroutines(BuildCtx *ctx)
   |  beq BASE, TMP2, ->fff_res		// Done if exactly 1 argument.
   |.  sw SFARG1LO, LO(RA)
   |1:
+<<<<<<< Updated upstream
   |  lw SFRETHI, HI(TMP1)
   |   lw SFRETLO, LO(TMP1)
   |  sw SFRETHI, -8+HI(TMP1)
   |   sw SFRETLO, -8+LO(TMP1)
+=======
+  |  lwc1 f0, 0(TMP1)
+  |  swc1 f0, -8(TMP1)
+>>>>>>> Stashed changes
   |  bne TMP1, TMP2, <1
   |.  addiu TMP1, TMP1, 8
   |  b ->fff_res
@@ -1138,9 +1253,14 @@ static void build_subroutines(BuildCtx *ctx)
   |  not TMP1, SFARG1HI
   |  sll TMP1, TMP1, 3
   |  addu TMP1, CFUNC:RB, TMP1
+<<<<<<< Updated upstream
   |  lw SFARG1HI, CFUNC:TMP1->upvalue[0].u32.hi
   |  b ->fff_restv
   |.  lw SFARG1LO, CFUNC:TMP1->upvalue[0].u32.lo
+=======
+  |  b ->fff_resn
+  |.  lwc1 FRET1, CFUNC:TMP1->upvalue
+>>>>>>> Stashed changes
   |
   |//-- Base library: getters and setters ---------------------------------
   |
@@ -1220,15 +1340,21 @@ static void build_subroutines(BuildCtx *ctx)
   |  call_intern lj_tab_get	// (lua_State *L, GCtab *t, cTValue *key)
   |.  move CARG1, L
   |  // Returns cTValue *.
+<<<<<<< Updated upstream
   |  lw SFARG1HI, HI(CRET1)
   |  b ->fff_restv
   |.  lw SFARG1LO, LO(CRET1)
+=======
+  |  b ->fff_resn
+  |.  lwc1 FRET1, 0(CRET1)
+>>>>>>> Stashed changes
   |
   |//-- Base library: conversions ------------------------------------------
   |
   |.ffunc tonumber
   |  // Only handles the number case inline (without a base argument).
   |  lw CARG1, HI(BASE)
+<<<<<<< Updated upstream
   |  xori AT, NARGS8:RC, 8		// Exactly one number argument.
   |  sltu TMP0, TISNUM, CARG1
   |  or AT, AT, TMP0
@@ -1236,6 +1362,15 @@ static void build_subroutines(BuildCtx *ctx)
   |.  lw SFARG1HI, HI(BASE)
   |  b ->fff_restv
   |.  lw SFARG1LO, LO(BASE)
+=======
+  |  xori AT, NARGS8:RC, 8
+  |  sltiu CARG1, CARG1, LJ_TISNUM
+  |  movn CARG1, r0, AT
+  |  beqz CARG1, ->fff_fallback		// Exactly one number argument.
+  |.  lwc1 FRET1, 0(BASE)
+  |  b ->fff_resn
+  |.  nop
+>>>>>>> Stashed changes
   |
   |.ffunc_1 tostring
   |  // Only handles the string or number case inline.
@@ -1279,6 +1414,7 @@ static void build_subroutines(BuildCtx *ctx)
   |.  move CARG1, L
   |  // Returns 0 at end of traversal.
   |  beqz CRET1, ->fff_restv		// End of traversal: return nil.
+<<<<<<< Updated upstream
   |.  li SFARG1HI, LJ_TNIL
   |  lw TMP0, 8+HI(BASE)
   |   lw TMP1, 8+LO(BASE)
@@ -1291,12 +1427,23 @@ static void build_subroutines(BuildCtx *ctx)
   |   sw TMP3, 8+LO(RA)
   |  b ->fff_res
   |.  li RD, (2+1)*8
+=======
+  |.  li CARG3, LJ_TNIL
+  |  lwc1 f0, 8(BASE)			// Copy key and value to results.
+  |    addiu RA, BASE, -8
+  |   lwc1 f2, 16(BASE)
+  |    li RD, (2+1)*8
+  |  swc1 f0, 0(RA)
+  |  b ->fff_res
+  |.  swc1 f2, 8(RA)
+>>>>>>> Stashed changes
   |
   |.ffunc_1 pairs
   |  li AT, LJ_TTAB
   |  bne SFARG1HI, AT, ->fff_fallback
   |.  lw PC, FRAME_PC(BASE)
 #if LJ_52
+<<<<<<< Updated upstream
   |  lw TAB:TMP2, TAB:SFARG1LO->metatable
   |  lw TMP0, CFUNC:RB->upvalue[0].u32.hi
   |   lw TMP1, CFUNC:RB->upvalue[0].u32.lo
@@ -1304,13 +1451,24 @@ static void build_subroutines(BuildCtx *ctx)
 #else
   |  lw TMP0, CFUNC:RB->upvalue[0].u32.hi
   |   lw TMP1, CFUNC:RB->upvalue[0].u32.lo
+=======
+  |  lw TAB:TMP2, TAB:CARG1->metatable
+  |   lwc1 f0, CFUNC:RB->upvalue[0]
+  |  bnez TAB:TMP2, ->fff_fallback
+#else
+  |  lwc1 f0, CFUNC:RB->upvalue[0]
+>>>>>>> Stashed changes
 #endif
   |.  addiu RA, BASE, -8
   |   sw TISNIL, 8+HI(BASE)
   |  sw TMP0, HI(RA)
   |   sw TMP1, LO(RA)
   |  b ->fff_res
+<<<<<<< Updated upstream
   |.  li RD, (3+1)*8
+=======
+  |.  swc1 f0, 0(RA)
+>>>>>>> Stashed changes
   |
   |.ffunc ipairs_aux
   |  sltiu AT, NARGS8:RC, 16
@@ -1318,10 +1476,20 @@ static void build_subroutines(BuildCtx *ctx)
   |    lw TAB:CARG1, LO(BASE)
   |   lw CARG4, 8+HI(BASE)
   |  bnez AT, ->fff_fallback
+<<<<<<< Updated upstream
   |.  addiu CARG3, CARG3, -LJ_TTAB
   |  xor CARG4, CARG4, TISNUM
   |  and AT, CARG3, CARG4
   |  bnez AT, ->fff_fallback
+=======
+  |.  lwc1 FARG2, 8(BASE)
+  |   addiu CARG3, CARG3, -LJ_TTAB
+  |  sltiu AT, CARG4, LJ_TISNUM
+  |   li TMP0, 1
+  |  movn AT, r0, CARG3
+  |   mtc1 TMP0, FARG1
+  |  beqz AT, ->fff_fallback
+>>>>>>> Stashed changes
   |.  lw PC, FRAME_PC(BASE)
   |  lw TMP2, 8+LO(BASE)
   |   lw TMP0, TAB:CARG1->asize
@@ -1334,16 +1502,27 @@ static void build_subroutines(BuildCtx *ctx)
   |.  addiu RA, BASE, -8
   |   sll TMP3, TMP2, 3
   |   addu TMP3, TMP1, TMP3
+<<<<<<< Updated upstream
   |  lw TMP1, HI(TMP3)
   |   lw TMP2, LO(TMP3)
+=======
+  |  beqz AT, >2			// Not in array part?
+  |.  swc1 FARG2, 0(RA)
+  |  lw TMP2, HI(TMP3)
+  |  lwc1 f0, 0(TMP3)
+>>>>>>> Stashed changes
   |1:
   |  beq TMP1, TISNIL, ->fff_res	// End of iteration, return 0 results.
   |.  li RD, (0+1)*8
   |  sw TMP1, 8+HI(RA)
   |   sw TMP2, 8+LO(RA)
   |  b ->fff_res
+<<<<<<< Updated upstream
   |.  li RD, (2+1)*8
   |
+=======
+  |.  swc1 f0, 8(RA)
+>>>>>>> Stashed changes
   |2:  // Check for empty hash part first. Otherwise call C function.
   |  lw TMP0, TAB:CARG1->hmask
   |  load_got lj_tab_getinth
@@ -1356,13 +1535,18 @@ static void build_subroutines(BuildCtx *ctx)
   |.  li RD, (0+1)*8
   |  lw TMP1, HI(CRET1)
   |  b <1
+<<<<<<< Updated upstream
   |.  lw TMP2, LO(CRET1)
+=======
+  |.  lwc1 f0, 0(CRET1)
+>>>>>>> Stashed changes
   |
   |.ffunc_1 ipairs
   |  li AT, LJ_TTAB
   |  bne SFARG1HI, AT, ->fff_fallback
   |.  lw PC, FRAME_PC(BASE)
 #if LJ_52
+<<<<<<< Updated upstream
   |  lw TAB:TMP2, TAB:SFARG1LO->metatable
   |  lw TMP0, CFUNC:RB->upvalue[0].u32.hi
   |   lw TMP1, CFUNC:RB->upvalue[0].u32.lo
@@ -1370,6 +1554,13 @@ static void build_subroutines(BuildCtx *ctx)
 #else
   |  lw TMP0, CFUNC:RB->upvalue[0].u32.hi
   |   lw TMP1, CFUNC:RB->upvalue[0].u32.lo
+=======
+  |  lw TAB:TMP2, TAB:CARG1->metatable
+  |   lwc1 f0, CFUNC:RB->upvalue[0]
+  |  bnez TAB:TMP2, ->fff_fallback
+#else
+  |  lwc1 f0, CFUNC:RB->upvalue[0]
+>>>>>>> Stashed changes
 #endif
   |.  addiu RA, BASE, -8
   |   sw TISNUM, 8+HI(BASE)
@@ -1377,7 +1568,11 @@ static void build_subroutines(BuildCtx *ctx)
   |  sw TMP0, HI(RA)
   |   sw TMP1, LO(RA)
   |  b ->fff_res
+<<<<<<< Updated upstream
   |.  li RD, (3+1)*8
+=======
+  |.  swc1 f0, 0(RA)
+>>>>>>> Stashed changes
   |
   |//-- Base library: catch errors ----------------------------------------
   |
@@ -1397,9 +1592,14 @@ static void build_subroutines(BuildCtx *ctx)
   |    sltiu AT, NARGS8:RC, 16
   |  lw CARG4, 8+HI(BASE)
   |    bnez AT, ->fff_fallback
+<<<<<<< Updated upstream
   |.  lw CARG3, 8+LO(BASE)
   |   lw CARG1, LO(BASE)
   |    lw CARG2, HI(BASE)
+=======
+  |.  lwc1 FARG2, 8(BASE)
+  |   lwc1 FARG1, 0(BASE)
+>>>>>>> Stashed changes
   |    lbu TMP1, DISPATCH_GL(hookmask)(DISPATCH)
   |  li AT, LJ_TFUNC
   |   move TMP2, BASE
@@ -1407,11 +1607,17 @@ static void build_subroutines(BuildCtx *ctx)
   |   addiu BASE, BASE, 16
   |  // Remember active hook before pcall.
   |  srl TMP3, TMP3, HOOK_ACTIVE_SHIFT
+<<<<<<< Updated upstream
   |   sw CARG3, LO(TMP2)	// Swap function and traceback.
   |   sw CARG4, HI(TMP2)
   |  andi TMP3, TMP3, 1
   |   sw CARG1, 8+LO(TMP2)
   |    sw CARG2, 8+HI(TMP2)
+=======
+  |   swc1 FARG2, 0(TMP2)		// Swap function and traceback.
+  |  andi TMP3, TMP3, 1
+  |   swc1 FARG1, 8(TMP2)
+>>>>>>> Stashed changes
   |  addiu PC, TMP3, 16+FRAME_PCALL
   |  b ->vm_call_dispatch
   |.  addiu NARGS8:RC, NARGS8:RC, -16
@@ -1458,6 +1664,7 @@ static void build_subroutines(BuildCtx *ctx)
   |  move CARG3, CARG2
   |  sw BASE, L->top
   |2:  // Move args to coroutine.
+<<<<<<< Updated upstream
   |   lw SFRETHI, HI(BASE)
   |    lw SFRETLO, LO(BASE)
   |  sltu AT, BASE, TMP1
@@ -1465,6 +1672,13 @@ static void build_subroutines(BuildCtx *ctx)
   |.  addiu BASE, BASE, 8
   |   sw SFRETHI, HI(CARG3)
   |    sw SFRETLO, LO(CARG3)
+=======
+  |   lwc1 f0, 0(BASE)
+  |  sltu AT, BASE, TMP1
+  |  beqz AT, >3
+  |.  addiu BASE, BASE, 8
+  |   swc1 f0, 0(CARG3)
+>>>>>>> Stashed changes
   |  b <2
   |.  addiu CARG3, CARG3, 8
   |3:
@@ -1490,12 +1704,19 @@ static void build_subroutines(BuildCtx *ctx)
   |  sw TMP2, L:RA->top			// Clear coroutine stack.
   |  move TMP1, BASE
   |5:  // Move results from coroutine.
+<<<<<<< Updated upstream
   |   lw SFRETHI, HI(TMP2)
   |    lw SFRETLO, LO(TMP2)
   |  addiu TMP2, TMP2, 8
   |  sltu AT, TMP2, TMP3
   |   sw SFRETHI, HI(TMP1)
   |    sw SFRETLO, LO(TMP1)
+=======
+  |   lwc1 f0, 0(TMP2)
+  |  addiu TMP2, TMP2, 8
+  |  sltu AT, TMP2, TMP3
+  |   swc1 f0, 0(TMP1)
+>>>>>>> Stashed changes
   |  bnez AT, <5
   |.  addiu TMP1, TMP1, 8
   |6:
@@ -1520,14 +1741,22 @@ static void build_subroutines(BuildCtx *ctx)
   |.if resume
   |  addiu TMP3, TMP3, -8
   |   li TMP1, LJ_TFALSE
+<<<<<<< Updated upstream
   |  lw SFRETHI, HI(TMP3)
   |   lw SFRETLO, LO(TMP3)
+=======
+  |  lwc1 f0, 0(TMP3)
+>>>>>>> Stashed changes
   |   sw TMP3, L:RA->top		// Remove error from coroutine stack.
   |    li RD, (2+1)*8
   |   sw TMP1, -8+HI(BASE)		// Prepend false to results.
   |    addiu RA, BASE, -8
+<<<<<<< Updated upstream
   |  sw SFRETHI, HI(BASE)		// Copy error message.
   |   sw SFRETLO, LO(BASE)
+=======
+  |  swc1 f0, 0(BASE)			// Copy error message.
+>>>>>>> Stashed changes
   |  b <7
   |.  andi TMP0, PC, FRAME_TYPE
   |.else
@@ -1563,6 +1792,7 @@ static void build_subroutines(BuildCtx *ctx)
   |
   |//-- Math library -------------------------------------------------------
   |
+<<<<<<< Updated upstream
   |.ffunc_1 math_abs
   |  bne SFARG1HI, TISNUM, >1
   |.  sra TMP0, SFARG1LO, 31
@@ -1579,6 +1809,15 @@ static void build_subroutines(BuildCtx *ctx)
   |.  sll SFARG1HI, SFARG1HI, 1
   |  srl SFARG1HI, SFARG1HI, 1
   |// fallthrough
+=======
+  |.ffunc_n math_abs
+  |.  abs.d FRET1, FARG1
+  |->fff_resn:
+  |  lw PC, FRAME_PC(BASE)
+  |  addiu RA, BASE, -8
+  |  b ->fff_res1
+  |.  swc1 FRET1, -8(BASE)
+>>>>>>> Stashed changes
   |
   |->fff_restv:
   |  // SFARG1LO/SFARG1HI = TValue result.
@@ -1620,6 +1859,7 @@ static void build_subroutines(BuildCtx *ctx)
   |.  load_got func
   |  sltiu AT, SFARG1HI, LJ_TISNUM
   |  beqz AT, ->fff_fallback
+<<<<<<< Updated upstream
   |.if FPU
   |.  ldc1 FARG1, 0(BASE)
   |.else
@@ -1627,6 +1867,11 @@ static void build_subroutines(BuildCtx *ctx)
   |.endif
   |  call_extern
   |.  nop
+=======
+  |.  nop
+  |  call_extern
+  |.  lwc1 FARG1, 0(BASE)
+>>>>>>> Stashed changes
   |  b ->fff_resn
   |.  nop
   |.endmacro
@@ -1673,11 +1918,15 @@ static void build_subroutines(BuildCtx *ctx)
   |.  load_got log
   |.if FPU
   |  call_extern
+<<<<<<< Updated upstream
   |.  ldc1 FARG1, 0(BASE)
   |.else
   |  call_extern
   |.  lw SFARG1LO, LO(BASE)
   |.endif
+=======
+  |.  lwc1 FARG1, 0(BASE)
+>>>>>>> Stashed changes
   |  b ->fff_resn
   |.  nop
   |
@@ -1716,6 +1965,14 @@ static void build_subroutines(BuildCtx *ctx)
   |.  sw SFRETLO, -8+LO(BASE)
   |.endif
   |
+<<<<<<< Updated upstream
+=======
+  |->ff_math_deg:
+  |.ffunc_n math_rad
+  |.  lwc1 FARG2, CFUNC:RB->upvalue[0]
+  |  b ->fff_resn
+  |.  mul.d FRET1, FARG1, FARG2
+>>>>>>> Stashed changes
   |
   |.ffunc math_ldexp
   |  sltiu AT, NARGS8:RC, 16
@@ -1745,8 +2002,9 @@ static void build_subroutines(BuildCtx *ctx)
   |  addiu RA, BASE, -8
   |.if FPU
   |   mtc1 TMP1, FARG2
-  |  sdc1 FRET1, 0(RA)
+  |  swc1 FRET1, 0(RA)
   |   cvt.d.w FARG2, FARG2
+<<<<<<< Updated upstream
   |   sdc1 FARG2, 8(RA)
   |.else
   |  sw SFRETLO, LO(RA)
@@ -1754,6 +2012,9 @@ static void build_subroutines(BuildCtx *ctx)
   |  sw TMP1, 8+LO(RA)
   |  sw TISNUM, 8+HI(RA)
   |.endif
+=======
+  |   swc1 FARG2, 8(RA)
+>>>>>>> Stashed changes
   |  b ->fff_res
   |.  li RD, (2+1)*8
   |
@@ -1763,6 +2024,7 @@ static void build_subroutines(BuildCtx *ctx)
   |  call_extern
   |.  addiu CARG3, BASE, -8
   |  addiu RA, BASE, -8
+<<<<<<< Updated upstream
   |.if FPU
   |  sdc1 FRET1, 0(BASE)
   |.else
@@ -1805,6 +2067,27 @@ static void build_subroutines(BuildCtx *ctx)
   |
   |5:
   |.  sltiu AT, SFARG1HI, LJ_TISNUM
+=======
+  |  swc1 FRET1, 0(BASE)
+  |  b ->fff_res
+  |.  li RD, (2+1)*8
+  |
+  |.macro math_minmax, name, ismax
+  |->ff_ .. name:
+  |  lw CARG3, HI(BASE)
+  |  beqz NARGS8:RC, ->fff_fallback
+  |.  lwc1 FRET1, 0(BASE)
+  |  sltiu AT, CARG3, LJ_TISNUM
+  |  beqz AT, ->fff_fallback
+  |.  addu TMP2, BASE, NARGS8:RC
+  |  addiu TMP1, BASE, 8
+  |  beq TMP1, TMP2, ->fff_resn
+  |1:
+  |.  lw CARG3, HI(TMP1)
+  |  lwc1 FARG1, 0(TMP1)
+  |   addiu TMP1, TMP1, 8
+  |  sltiu AT, CARG3, LJ_TISNUM
+>>>>>>> Stashed changes
   |  beqz AT, ->fff_fallback
   |.if FPU
   |.  ldc1 FRET1, 0(BASE)
@@ -1883,12 +2166,17 @@ static void build_subroutines(BuildCtx *ctx)
   |  sll RD, RD, 3			// RD = ((str->len != 0)+1)*8
   |  sw TISNUM, HI(RA)
   |  b ->fff_res
+<<<<<<< Updated upstream
   |.  sw TMP1, LO(RA)
+=======
+  |.  swc1 f0, 0(RA)
+>>>>>>> Stashed changes
   |
   |.ffunc string_char			// Only handle the 1-arg case here.
   |  ffgccheck
   |.  nop
   |  lw CARG3, HI(BASE)
+<<<<<<< Updated upstream
   |   lw CARG1, LO(BASE)
   |  li TMP1, 255
   |  xori AT, NARGS8:RC, 8		// Exactly 1 argument.
@@ -1897,6 +2185,13 @@ static void build_subroutines(BuildCtx *ctx)
   |  or AT, AT, TMP0
   |   or AT, AT, TMP1
   |  bnez AT, ->fff_fallback
+=======
+  |   lwc1 FARG1, 0(BASE)
+  |  li AT, 8
+  |  bne NARGS8:RC, AT, ->fff_fallback	// Exactly 1 argument.
+  |.  sltiu AT, CARG3, LJ_TISNUM
+  |  beqz AT, ->fff_fallback
+>>>>>>> Stashed changes
   |.  li CARG3, 1
   |  addiu CARG2, sp, ARG5_OFS
   |  sb CARG1, ARG5
@@ -1918,10 +2213,19 @@ static void build_subroutines(BuildCtx *ctx)
   |.  nop
   |  addiu AT, NARGS8:RC, -16
   |   lw CARG3, 16+HI(BASE)
+<<<<<<< Updated upstream
   |   lw TMP0, HI(BASE)
   |    lw STR:CARG1, LO(BASE)
   |  bltz AT, ->fff_fallback
   |.  lw CARG2, 8+HI(BASE)
+=======
+  |    lwc1 f0, 16(BASE)
+  |   lw TMP0, HI(BASE)
+  |    lw STR:CARG1, LO(BASE)
+  |  bltz AT, ->fff_fallback
+  |   lw CARG2, 8+HI(BASE)
+  |    lwc1 f2, 8(BASE)
+>>>>>>> Stashed changes
   |  beqz AT, >1
   |.  li CARG4, -1
   |  bne CARG3, TISNUM, ->fff_fallback
@@ -1955,7 +2259,71 @@ static void build_subroutines(BuildCtx *ctx)
   |->fff_emptystr:  // Return empty string.
   |  addiu STR:SFARG1LO, DISPATCH, DISPATCH_GL(strempty)
   |  b ->fff_restv
+<<<<<<< Updated upstream
   |.  li SFARG1HI, LJ_TSTR
+=======
+  |.  li CARG3, LJ_TSTR
+  |
+  |.ffunc string_rep			// Only handle the 1-char case inline.
+  |  ffgccheck
+  |.  nop
+  |  lw TMP0, HI(BASE)
+  |   addiu AT, NARGS8:RC, -16		// Exactly 2 arguments.
+  |  lw CARG4, 8+HI(BASE)
+  |   lw STR:CARG1, LO(BASE)
+  |  addiu TMP0, TMP0, -LJ_TSTR
+  |   lwc1 f0, 8(BASE)
+  |  or AT, AT, TMP0
+  |  bnez AT, ->fff_fallback
+  |.  sltiu AT, CARG4, LJ_TISNUM
+  |   cvt.w.d f0, f0
+  |  beqz AT, ->fff_fallback
+  |.  lw TMP0, STR:CARG1->len
+  |   mfc1 CARG3, f0
+  |  lw TMP1, DISPATCH_GL(tmpbuf.sz)(DISPATCH)
+  |  li AT, 1
+  |   blez CARG3, ->fff_emptystr	// Count <= 0?
+  |.   sltu AT, AT, TMP0
+  |  beqz TMP0, ->fff_emptystr		// Zero length string?
+  |.  sltu TMP0, TMP1, CARG3
+  |  or AT, AT, TMP0
+  |   lw CARG2, DISPATCH_GL(tmpbuf.buf)(DISPATCH)
+  |  bnez AT, ->fff_fallback		// Fallback for > 1-char strings.
+  |.  lbu TMP0, STR:CARG1[1]
+  |  addu TMP2, CARG2, CARG3
+  |1:  // Fill buffer with char. Yes, this is suboptimal code (do you care?).
+  |  addiu TMP2, TMP2, -1
+  |  sltu AT, CARG2, TMP2
+  |  bnez AT, <1
+  |.  sb TMP0, 0(TMP2)
+  |  b ->fff_newstr
+  |.  nop
+  |
+  |.ffunc string_reverse
+  |  ffgccheck
+  |.  nop
+  |  lw CARG3, HI(BASE)
+  |   lw STR:CARG1, LO(BASE)
+  |  beqz NARGS8:RC, ->fff_fallback
+  |.  li AT, LJ_TSTR
+  |  bne CARG3, AT, ->fff_fallback
+  |.  lw TMP1, DISPATCH_GL(tmpbuf.sz)(DISPATCH)
+  |  lw CARG3, STR:CARG1->len
+  |   addiu CARG1, STR:CARG1, #STR
+  |   lw CARG2, DISPATCH_GL(tmpbuf.buf)(DISPATCH)
+  |  sltu AT, TMP1, CARG3
+  |  bnez AT, ->fff_fallback
+  |.  addu TMP3, CARG1, CARG3
+  |  addu CARG4, CARG2, CARG3
+  |1:  // Reverse string copy.
+  |   lbu TMP1, 0(CARG1)
+  |  sltu AT, CARG1, TMP3
+  |  beqz AT, ->fff_newstr
+  |.  addiu CARG1, CARG1, 1
+  |  addiu CARG4, CARG4, -1
+  |  b <1
+  |   sb TMP1, 0(CARG4)
+>>>>>>> Stashed changes
   |
   |.macro ffstring_op, name
   |  .ffunc string_ .. name
@@ -2050,12 +2418,23 @@ static void build_subroutines(BuildCtx *ctx)
   |  addiu TMP2, BASE, 8
   |  addu TMP3, BASE, NARGS8:RC
   |1:
+<<<<<<< Updated upstream
   |  lw SFARG1HI, HI(TMP2)
   |  beq TMP2, TMP3, ->fff_resi
   |.  lw SFARG1LO, LO(TMP2)
   |.if FPU
   |  bne SFARG1HI, TISNUM, >2
   |.  addiu TMP2, TMP2, 8
+=======
+  |  lw CARG4, HI(TMP1)
+  |  beq TMP1, TMP2, ->fff_resi
+  |.  lwc1 FARG1, 0(TMP1)
+  |  sltiu AT, CARG4, LJ_TISNUM
+  |  beqz AT, ->fff_fallback
+  |  add.d FARG1, FARG1, TOBIT
+  |  mfc1 CARG2, FARG1
+  |  ins CRET1, CRET1, CARG2
+>>>>>>> Stashed changes
   |  b <1
   |.  ins CRET1, CRET1, SFARG1LO
   |2:
@@ -2397,8 +2776,12 @@ static void build_subroutines(BuildCtx *ctx)
   |//-----------------------------------------------------------------------
   |
   |.macro savex_, a, b
+<<<<<<< Updated upstream
   |.if FPU
   |  sdc1 f..a, 16+a*8(sp)
+=======
+  |  swc1 f..a, 16+a*8(sp)
+>>>>>>> Stashed changes
   |  sw r..a, 16+32*8+a*4(sp)
   |  sw r..b, 16+32*8+b*4(sp)
   |.else
@@ -2428,10 +2811,16 @@ static void build_subroutines(BuildCtx *ctx)
   |  savex_ 22, 23
   |  savex_ 24, 25
   |  savex_ 26, 27
+<<<<<<< Updated upstream
   |.if FPU
   |  sdc1 f28, 16+28*8(sp)
   |  sdc1 f30, 16+30*8(sp)
   |  sw r28, 16+32*8+28*4(sp)
+=======
+  |  swc1 f28, 16+28*8(sp)
+  |  sw r28, 16+32*8+28*4(sp)
+  |  swc1 f30, 16+30*8(sp)
+>>>>>>> Stashed changes
   |  sw r30, 16+32*8+30*4(sp)
   |  sw r0, 16+32*8+31*4(sp)		// Clear RID_TMP.
   |  addiu TMP2, sp, 16+32*8+32*4	// Recompute original value of sp.
@@ -2485,7 +2874,11 @@ static void build_subroutines(BuildCtx *ctx)
   |  lw TMP1, LFUNC:RB->pc
   |   sw r0, DISPATCH_GL(jit_base)(DISPATCH)
   |  lw KBASE, PC2PROTO(k)(TMP1)
+<<<<<<< Updated upstream
   |    .FPU cvt.d.s TOBIT, TOBIT
+=======
+  |    cvt.w.s TOBIT, TOBIT
+>>>>>>> Stashed changes
   |  // Modified copy of ins_next which handles function header dispatch, too.
   |  lw INS, 0(PC)
   |   addiu PC, PC, 4
@@ -2536,8 +2929,13 @@ static void build_subroutines(BuildCtx *ctx)
   |
   |// Hard-float round to integer.
   |// Modifies AT, TMP0, FRET1, FRET2, f4. Keeps all others incl. FARG1.
+<<<<<<< Updated upstream
   |.macro vm_round_hf, func
   |  lui TMP0, 0x4330			// Hiword of 2^52 (double).
+=======
+  |.macro vm_round, func
+  |  lui TMP0, 0x4330			// Hiword of 2^52 (float).
+>>>>>>> Stashed changes
   |  mtc1 r0, f4
   |  mtc1 TMP0, f5
   |  abs.d FRET2, FARG1			// |x|
@@ -2548,9 +2946,9 @@ static void build_subroutines(BuildCtx *ctx)
   |.  sub.d FRET1, FRET1, f4
   |    slt AT, AT, r0
   |.if "func" == "ceil"
-  |   lui TMP0, 0xbff0			// Hiword of -1 (double). Preserves -0.
+  |   lui TMP0, 0xbff0			// Hiword of -1 (float). Preserves -0.
   |.else
-  |   lui TMP0, 0x3ff0			// Hiword of +1 (double).
+  |   lui TMP0, 0x3ff0			// Hiword of +1 (float).
   |.endif
   |.if "func" == "trunc"
   |   mtc1 TMP0, f5
@@ -2821,10 +3219,17 @@ static void build_subroutines(BuildCtx *ctx)
   |  sw r1, CTSTATE->cb.slot
   |  sw CARG1, CTSTATE->cb.gpr[0]
   |  sw CARG2, CTSTATE->cb.gpr[1]
+<<<<<<< Updated upstream
   |   .FPU sdc1 FARG1, CTSTATE->cb.fpr[0]
   |  sw CARG3, CTSTATE->cb.gpr[2]
   |  sw CARG4, CTSTATE->cb.gpr[3]
   |   .FPU sdc1 FARG2, CTSTATE->cb.fpr[1]
+=======
+  |   swc1 FARG1, CTSTATE->cb.fpr[0]
+  |  sw CARG3, CTSTATE->cb.gpr[2]
+  |  sw CARG4, CTSTATE->cb.gpr[3]
+  |   swc1 FARG2, CTSTATE->cb.fpr[1]
+>>>>>>> Stashed changes
   |  addiu TMP0, sp, CFRAME_SPACE+16
   |  sw TMP0, CTSTATE->cb.stack
   |  sw r0, SAVE_PC			// Any value outside of bytecode is ok.
@@ -2843,7 +3248,11 @@ static void build_subroutines(BuildCtx *ctx)
   |     li TISNIL, LJ_TNIL
   |  subu RC, RC, BASE
   |    st_vmstate
+<<<<<<< Updated upstream
   |     .FPU cvt.d.s TOBIT, TOBIT
+=======
+  |     cvt.w.s TOBIT, TOBIT
+>>>>>>> Stashed changes
   |  ins_callt
   |.endif
   |
@@ -2859,9 +3268,16 @@ static void build_subroutines(BuildCtx *ctx)
   |.  move CARG1, CTSTATE
   |   .FPU ldc1 FRET1, CTSTATE->cb.fpr[0]
   |  lw CRET1, CTSTATE->cb.gpr[0]
+<<<<<<< Updated upstream
   |   .FPU ldc1 FRET2, CTSTATE->cb.fpr[1]
   |  b ->vm_leave_unw
   |.  lw CRET2, CTSTATE->cb.gpr[1]
+=======
+  |   lwc1 FRET1, CTSTATE->cb.fpr[0]
+  |  lw CRET2, CTSTATE->cb.gpr[1]
+  |  b ->vm_leave_unw
+  |.  lwc1 FRET2, CTSTATE->cb.fpr[1]
+>>>>>>> Stashed changes
   |.endif
   |
   |->vm_ffi_call:			// Call C function via FFI.
@@ -2893,8 +3309,13 @@ static void build_subroutines(BuildCtx *ctx)
   |  lw CARG2, CCSTATE->gpr[1]
   |  lw CARG3, CCSTATE->gpr[2]
   |  lw CARG4, CCSTATE->gpr[3]
+<<<<<<< Updated upstream
   |  .FPU ldc1 FARG1, CCSTATE->fpr[0]
   |  .FPU ldc1 FARG2, CCSTATE->fpr[1]
+=======
+  |  lwc1 FARG1, CCSTATE->fpr[0]
+  |  lwc1 FARG2, CCSTATE->fpr[1]
+>>>>>>> Stashed changes
   |  jalr CFUNCADDR
   |.  lw CARG1, CCSTATE->gpr[0]		// Do this last, since CCSTATE is CARG1.
   |  lw CCSTATE:TMP1, -12(r16)
@@ -2902,6 +3323,7 @@ static void build_subroutines(BuildCtx *ctx)
   |  lw ra, -4(r16)
   |  sw CRET1, CCSTATE:TMP1->gpr[0]
   |  sw CRET2, CCSTATE:TMP1->gpr[1]
+<<<<<<< Updated upstream
   |.if FPU
   |  sdc1 FRET1, CCSTATE:TMP1->fpr[0]
   |  sdc1 FRET2, CCSTATE:TMP1->fpr[1]
@@ -2909,6 +3331,10 @@ static void build_subroutines(BuildCtx *ctx)
   |  sw CARG1, CCSTATE:TMP1->gpr[2]	// Soft-float: complex double .im part.
   |  sw CARG2, CCSTATE:TMP1->gpr[3]
   |.endif
+=======
+  |  swc1 FRET1, CCSTATE:TMP1->fpr[0]
+  |  swc1 FRET2, CCSTATE:TMP1->fpr[1]
+>>>>>>> Stashed changes
   |  move sp, r16
   |  jr ra
   |.  move r16, TMP2
@@ -2932,11 +3358,22 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
 
   case BC_ISLT: case BC_ISGE: case BC_ISLE: case BC_ISGT:
     |  // RA = src1*8, RD = src2*8, JMP with RD = target
+<<<<<<< Updated upstream
     |.macro bc_comp, FRA, FRD, RAHI, RALO, RDHI, RDLO, movop, fmovop, fcomp, sfcomp
     |  addu RA, BASE, RA
     |   addu RD, BASE, RD
     |  lw RAHI, HI(RA)
     |   lw RDHI, HI(RD)
+=======
+    |  addu CARG2, BASE, RA
+    |   addu CARG3, BASE, RD
+    |  lw TMP0, HI(CARG2)
+    |   lw TMP1, HI(CARG3)
+    |   lwc1 f0, 0(CARG2)
+    |   lwc1 f2, 0(CARG3)
+    |  sltiu TMP0, TMP0, LJ_TISNUM
+    |   sltiu TMP1, TMP1, LJ_TISNUM
+>>>>>>> Stashed changes
     |    lhu TMP2, OFS_RD(PC)
     |    addiu PC, PC, 4
     |  bne RAHI, TISNUM, >2
@@ -3034,15 +3471,34 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
     vk = op == BC_ISEQV;
     |  // RA = src1*8, RD = src2*8, JMP with RD = target
     |  addu RA, BASE, RA
+<<<<<<< Updated upstream
     |    addiu PC, PC, 4
+=======
+    |   addiu PC, PC, 4
+    |  lw TMP0, HI(RA)
+    |   lwc1 f0, 0(RA)
+>>>>>>> Stashed changes
     |  addu RD, BASE, RD
     |  lw SFARG1HI, HI(RA)
     |    lhu TMP2, -4+OFS_RD(PC)
+<<<<<<< Updated upstream
     |  lw SFARG2HI, HI(RD)
     |    lui TMP3, (-(BCBIAS_J*4 >> 16) & 65535)
     |  sltu AT, TISNUM, SFARG1HI
     |  sltu TMP0, TISNUM, SFARG2HI
     |  or AT, AT, TMP0
+=======
+    |   lw TMP1, HI(RD)
+    |   lwc1 f2, 0(RD)
+    |    lui TMP3, (-(BCBIAS_J*4 >> 16) & 65535)
+    |  sltiu AT, TMP0, LJ_TISNUM
+    |  sltiu CARG1, TMP1, LJ_TISNUM
+    |    decode_RD4b TMP2
+    |  and AT, AT, CARG1
+    |  beqz AT, >5
+    |.   addu TMP2, TMP2, TMP3
+    |  c.eq.d f0, f2
+>>>>>>> Stashed changes
     if (vk) {
       |  beqz AT, ->BC_ISEQN_Z
     } else {
@@ -3124,11 +3580,20 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
     vk = op == BC_ISEQN;
     |  // RA = src*8, RD = num_const*8, JMP with RD = target
     |  addu RA, BASE, RA
+<<<<<<< Updated upstream
     |   addu RD, KBASE, RD
     |  lw SFARG1HI, HI(RA)
     |   lw SFARG2HI, HI(RD)
     |    lhu TMP2, OFS_RD(PC)
     |    addiu PC, PC, 4
+=======
+    |   addiu PC, PC, 4
+    |  lw TMP0, HI(RA)
+    |   lwc1 f0, 0(RA)
+    |  addu RD, KBASE, RD
+    |    lhu TMP2, -4+OFS_RD(PC)
+    |   lwc1 f2, 0(RD)
+>>>>>>> Stashed changes
     |    lui TMP3, (-(BCBIAS_J*4 >> 16) & 65535)
     |    decode_RD4b TMP2
     if (vk) {
@@ -3293,8 +3758,12 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
       |  addu PC, PC, TMP2
     } else {
       |  sltiu TMP0, TMP0, LJ_TISTRUECOND
+<<<<<<< Updated upstream
       |  lw SFRETHI, HI(RD)
       |   lw SFRETLO, LO(RD)
+=======
+      |  lwc1 f0, 0(RD)
+>>>>>>> Stashed changes
       if (op == BC_ISTC) {
 	|  beqz TMP0, >1
       } else {
@@ -3304,8 +3773,12 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
       |   decode_RD4b TMP2
       |   lui TMP3, (-(BCBIAS_J*4 >> 16) & 65535)
       |   addu TMP2, TMP2, TMP3
+<<<<<<< Updated upstream
       |  sw SFRETHI, HI(RA)
       |   sw SFRETLO, LO(RA)
+=======
+      |  swc1 f0, 0(RA)
+>>>>>>> Stashed changes
       |   addu PC, PC, TMP2
       |1:
     }
@@ -3337,12 +3810,19 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
   case BC_MOV:
     |  // RA = dst*8, RD = src*8
     |  addu RD, BASE, RD
+<<<<<<< Updated upstream
     |   addu RA, BASE, RA
     |  lw SFRETHI, HI(RD)
     |   lw SFRETLO, LO(RD)
     |  ins_next1
     |  sw SFRETHI, HI(RA)
     |   sw SFRETLO, LO(RA)
+=======
+    |  addu RA, BASE, RA
+    |  lwc1 f0, 0(RD)
+    |  ins_next1
+    |  swc1 f0, 0(RA)
+>>>>>>> Stashed changes
     |  ins_next2
     break;
   case BC_NOT:
@@ -3362,6 +3842,7 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
     |  addu RB, BASE, RD
     |  lw SFARG1HI, HI(RB)
     |   addu RA, BASE, RA
+<<<<<<< Updated upstream
     |  bne SFARG1HI, TISNUM, >2
     |.  lw SFARG1LO, LO(RB)
     |  lui TMP1, 0x8000
@@ -3371,6 +3852,15 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
     |  ins_next1
     |  sw SFARG1HI, HI(RA)
     |   sw SFARG1LO, LO(RA)
+=======
+    |  lw TMP0, HI(CARG3)
+    |   lwc1 f0, 0(CARG3)
+    |  sltiu AT, TMP0, LJ_TISNUM
+    |  beqz AT, ->vmeta_unm
+    |.  neg.d f0, f0
+    |  ins_next1
+    |   swc1 f0, 0(RA)
+>>>>>>> Stashed changes
     |  ins_next2
     |2:
     |  sltiu AT, SFARG1HI, LJ_TISNUM
@@ -3391,8 +3881,12 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
     |   lw CRET1, STR:CARG1->len
     |1:
     |  ins_next1
+<<<<<<< Updated upstream
     |  sw TISNUM, HI(RA)
     |   sw CRET1, LO(RA)
+=======
+    |  swc1 f0, 0(RA)
+>>>>>>> Stashed changes
     |  ins_next2
     |2:
     |  bne TMP0, AT, ->vmeta_len
@@ -3467,6 +3961,7 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
     |  // RA = dst*8, RB = src1*8, RC = src2*8 | num_const*8
     ||switch (vk) {
     ||case 0:
+<<<<<<< Updated upstream
     |   decode_RB8a RB, INS
     |   decode_RB8b RB
     |    decode_RDtoRC8 RC, RD
@@ -3498,6 +3993,33 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
     |   b label
     |.endif
     |.   addu RC, BASE, RC
+=======
+    |   addu CARG3, BASE, RB
+    |    addu CARG4, KBASE, RC
+    |   lw TMP1, HI(CARG3)
+    |   lwc1 f20, 0(CARG3)
+    |    lwc1 f22, 0(CARG4)
+    |   sltiu AT, TMP1, LJ_TISNUM
+    ||  break;
+    ||case 1:
+    |   addu CARG4, BASE, RB
+    |    addu CARG3, KBASE, RC
+    |   lw TMP1, HI(CARG4)
+    |   lwc1 f22, 0(CARG4)
+    |    lwc1 f20, 0(CARG3)
+    |   sltiu AT, TMP1, LJ_TISNUM
+    ||  break;
+    ||default:
+    |   addu CARG3, BASE, RB
+    |    addu CARG4, BASE, RC
+    |   lw TMP1, HI(CARG3)
+    |    lw TMP2, HI(CARG4)
+    |   lwc1 f20, 0(CARG3)
+    |    lwc1 f22, 0(CARG4)
+    |   sltiu AT, TMP1, LJ_TISNUM
+    |   sltiu TMP0, TMP2, LJ_TISNUM
+    |   and AT, AT, TMP0
+>>>>>>> Stashed changes
     ||  break;
     ||}
     |.endmacro
@@ -3585,6 +4107,7 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
     |.endif
     |
     |  ins_next1
+<<<<<<< Updated upstream
     |.if not FPU
     |  sw SFRETHI, HI(RA)
     |.endif
@@ -3597,6 +4120,9 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
     |.  sw SFRETLO, LO(RA)
     |.endif
     |.if "intins" == "div"
+=======
+    |  swc1 f0, 0(RA)
+>>>>>>> Stashed changes
     |  ins_next2
     |.endif
     |
@@ -3624,11 +4150,25 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
     |  ins_arithpre ->BC_MODVN_Z
     break;
   case BC_POW:
+<<<<<<< Updated upstream
     |  ins_arithpre none
     |  lw SFARG1HI, HI(RB)
     |   lw SFARG2HI, HI(RC)
     |  sltiu AT, SFARG1HI, LJ_TISNUM
     |  sltiu TMP0, SFARG2HI, LJ_TISNUM
+=======
+    |  decode_RB8a RB, INS
+    |  decode_RB8b RB
+    |   decode_RDtoRC8 RC, RD
+    |  addu CARG3, BASE, RB
+    |   addu CARG4, BASE, RC
+    |  lw TMP1, HI(CARG3)
+    |   lw TMP2, HI(CARG4)
+    |  lwc1 FARG1, 0(CARG3)
+    |   lwc1 FARG2, 0(CARG4)
+    |  sltiu AT, TMP1, LJ_TISNUM
+    |  sltiu TMP0, TMP2, LJ_TISNUM
+>>>>>>> Stashed changes
     |  and AT, AT, TMP0
     |  load_got pow
     |  beqz AT, ->vmeta_arith
@@ -3643,12 +4183,16 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
     |  call_extern
     |.  nop
     |  ins_next1
+<<<<<<< Updated upstream
     |.if FPU
     |  sdc1 FRET1, 0(RA)
     |.else
     |  sw SFRETHI, HI(RA)
     |   sw SFRETLO, LO(RA)
     |.endif
+=======
+    |  swc1 FRET1, 0(RA)
+>>>>>>> Stashed changes
     |  ins_next2
     break;
 
@@ -3671,12 +4215,19 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
     |  bnez CRET1, ->vmeta_binop
     |.  lw BASE, L->base
     |  addu RB, BASE, MULTRES
+<<<<<<< Updated upstream
     |  lw SFRETHI, HI(RB)
     |   lw SFRETLO, LO(RB)
     |   addu RA, BASE, RA
     |  ins_next1
     |  sw SFRETHI, HI(RA)
     |   sw SFRETLO, LO(RA)
+=======
+    |  lwc1 f0, 0(RB)
+    |   addu RA, BASE, RA
+    |  ins_next1
+    |   swc1 f0, 0(RA)			// Copy result from RB to RA.
+>>>>>>> Stashed changes
     |  ins_next2
     break;
 
@@ -3713,19 +4264,29 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
     |  sra RD, INS, 16
     |  addu RA, BASE, RA
     |  ins_next1
+<<<<<<< Updated upstream
     |  sw TISNUM, HI(RA)
     |   sw RD, LO(RA)
+=======
+    |  swc1 f0, 0(RA)
+>>>>>>> Stashed changes
     |  ins_next2
     break;
   case BC_KNUM:
     |  // RA = dst*8, RD = num_const*8
     |  addu RD, KBASE, RD
     |   addu RA, BASE, RA
+<<<<<<< Updated upstream
     |  lw SFRETHI, HI(RD)
     |   lw SFRETLO, LO(RD)
     |  ins_next1
     |  sw SFRETHI, HI(RA)
     |   sw SFRETLO, LO(RA)
+=======
+    |  lwc1 f0, 0(RD)
+    |  ins_next1
+    |   swc1 f0, 0(RA)
+>>>>>>> Stashed changes
     |  ins_next2
     break;
   case BC_KPRI:
@@ -3761,11 +4322,17 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
     |  lw UPVAL:RB, LFUNC:RD->uvptr
     |  ins_next1
     |  lw TMP1, UPVAL:RB->v
+<<<<<<< Updated upstream
     |  lw SFRETHI, HI(TMP1)
     |   lw SFRETLO, LO(TMP1)
     |  addu RA, BASE, RA
     |  sw SFRETHI, HI(RA)
     |   sw SFRETLO, LO(RA)
+=======
+    |  lwc1 f0, 0(TMP1)
+    |  addu RA, BASE, RA
+    |  swc1 f0, 0(RA)
+>>>>>>> Stashed changes
     |  ins_next2
     break;
   case BC_USETV:
@@ -3774,6 +4341,10 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
     |    srl RA, RA, 1
     |   addu RD, BASE, RD
     |    addu RA, RA, LFUNC:RB
+<<<<<<< Updated upstream
+=======
+    |   lwc1 f0, 0(RD)
+>>>>>>> Stashed changes
     |  lw UPVAL:RB, LFUNC:RA->uvptr
     |   lw SFRETHI, HI(RD)
     |    lw SFRETLO, LO(RD)
@@ -3781,8 +4352,13 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
     |   lw CARG2, UPVAL:RB->v
     |  andi TMP3, TMP3, LJ_GC_BLACK	// isblack(uv)
     |  lbu TMP0, UPVAL:RB->closed
+<<<<<<< Updated upstream
     |   sw SFRETHI, HI(CARG2)
     |    sw SFRETLO, LO(CARG2)
+=======
+    |   lw TMP2, HI(RD)
+    |   swc1 f0, 0(CARG2)
+>>>>>>> Stashed changes
     |  li AT, LJ_GC_BLACK|1
     |  or TMP3, TMP3, TMP0
     |  beq TMP3, AT, >2			// Upvalue is closed and black?
@@ -3842,6 +4418,7 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
     |   srl RA, RA, 1
     |    addu RD, KBASE, RD
     |   addu RA, RA, LFUNC:RB
+<<<<<<< Updated upstream
     |   lw UPVAL:RB, LFUNC:RA->uvptr
     |    lw SFRETHI, HI(RD)
     |     lw SFRETLO, LO(RD)
@@ -3849,6 +4426,13 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
     |  ins_next1
     |    sw SFRETHI, HI(TMP1)
     |     sw SFRETLO, LO(TMP1)
+=======
+    |    lwc1 f0, 0(RD)
+    |  lw UPVAL:RB, LFUNC:RA->uvptr
+    |  ins_next1
+    |  lw TMP1, UPVAL:RB->v
+    |  swc1 f0, 0(TMP1)
+>>>>>>> Stashed changes
     |  ins_next2
     break;
   case BC_USETP:
@@ -3979,6 +4563,10 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
     |   lw TMP2, HI(CARG3)
     |    lw TAB:RB, LO(CARG2)
     |  li AT, LJ_TTAB
+<<<<<<< Updated upstream
+=======
+    |   lwc1 f0, 0(CARG3)
+>>>>>>> Stashed changes
     |  bne TMP1, AT, ->vmeta_tgetv
     |.  addu RA, BASE, RA
     |  bne TMP2, TISNUM, >5
@@ -3989,6 +4577,7 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
     |   sll TMP2, RC, 3
     |  beqz AT, ->vmeta_tgetv		// Integer key and in array part?
     |.  addu TMP2, TMP1, TMP2
+<<<<<<< Updated upstream
     |  lw SFRETHI, HI(TMP2)
     |  beq SFRETHI, TISNIL, >2
     |.  lw SFRETLO, LO(TMP2)
@@ -3996,6 +4585,14 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
     |  ins_next1
     |  sw SFRETHI, HI(RA)
     |   sw SFRETLO, LO(RA)
+=======
+    |  lw TMP0, HI(TMP2)
+    |  beq TMP0, TISNIL, >2
+    |.  lwc1 f0, 0(TMP2)
+    |1:
+    |  ins_next1
+    |   swc1 f0, 0(RA)
+>>>>>>> Stashed changes
     |  ins_next2
     |
     |2:  // Check for __index if table value is nil.
@@ -4090,6 +4687,7 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
     |  sltu AT, TMP0, TMP1
     |  beqz AT, ->vmeta_tgetb
     |.  addu RC, TMP2, RC
+<<<<<<< Updated upstream
     |  lw SFRETHI, HI(RC)
     |  beq SFRETHI, TISNIL, >5
     |.  lw SFRETLO, LO(RC)
@@ -4097,6 +4695,14 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
     |  ins_next1
     |  sw SFRETHI, HI(RA)
     |   sw SFRETLO, LO(RA)
+=======
+    |  lw TMP1, HI(RC)
+    |  beq TMP1, TISNIL, >5
+    |.  lwc1 f0, 0(RC)
+    |1:
+    |  ins_next1
+    |   swc1 f0, 0(RA)
+>>>>>>> Stashed changes
     |  ins_next2
     |
     |5:  // Check for __index if table value is nil.
@@ -4146,6 +4752,10 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
     |   lw TMP2, HI(CARG3)
     |    lw TAB:RB, LO(CARG2)
     |  li AT, LJ_TTAB
+<<<<<<< Updated upstream
+=======
+    |   lwc1 f0, 0(CARG3)
+>>>>>>> Stashed changes
     |  bne TMP1, AT, ->vmeta_tsetv
     |.  addu RA, BASE, RA
     |  bne TMP2, TISNUM, >5
@@ -4160,12 +4770,20 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
     |   lbu TMP3, TAB:RB->marked
     |  lw SFRETHI, HI(RA)
     |  beq TMP0, TISNIL, >3
+<<<<<<< Updated upstream
     |.  lw SFRETLO, LO(RA)
     |1:
     |   andi AT, TMP3, LJ_GC_BLACK  // isblack(table)
     |  sw SFRETHI, HI(TMP1)
     |  bnez AT, >7
     |.  sw SFRETLO, LO(TMP1)
+=======
+    |.  lwc1 f0, 0(RA)
+    |1:
+    |   andi AT, TMP3, LJ_GC_BLACK	// isblack(table)
+    |   bnez AT, >7
+    |.  swc1 f0, 0(TMP1)
+>>>>>>> Stashed changes
     |2:
     |  ins_next
     |
@@ -4215,12 +4833,16 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
     |  sll TMP1, TMP1, 3
     |  subu TMP1, TMP0, TMP1
     |  addu NODE:TMP2, NODE:TMP2, TMP1	// node = tab->node + (idx*32-idx*8)
+<<<<<<< Updated upstream
     |.if FPU
     |   ldc1 f20, 0(RA)
     |.else
     |   lw SFRETHI, HI(RA)
     |    lw SFRETLO, LO(RA)
     |.endif
+=======
+    |   lwc1 f20, 0(RA)
+>>>>>>> Stashed changes
     |1:
     |  lw CARG1, offsetof(Node, key)+HI(NODE:TMP2)
     |   lw TMP0, offsetof(Node, key)+LO(NODE:TMP2)
@@ -4236,12 +4858,16 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
     |  andi AT, TMP3, LJ_GC_BLACK	// isblack(table)
     |.if FPU
     |  bnez AT, >7
+<<<<<<< Updated upstream
     |.  sdc1 f20, NODE:TMP2->val
     |.else
     |   sw SFRETHI, NODE:TMP2->val.u32.hi
     |  bnez AT, >7
     |.   sw SFRETLO, NODE:TMP2->val.u32.lo
     |.endif
+=======
+    |.  swc1 f20, NODE:TMP2->val
+>>>>>>> Stashed changes
     |3:
     |  ins_next
     |
@@ -4281,6 +4907,7 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
     |  lw BASE, L->base
     |.if FPU
     |  b <3				// No 2nd write barrier needed.
+<<<<<<< Updated upstream
     |.  sdc1 f20, 0(CRET1)
     |.else
     |  lw SFARG1HI, HI(RA)
@@ -4289,6 +4916,9 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
     |  b <3				// No 2nd write barrier needed.
     |.  sw SFARG1LO, LO(CRET1)
     |.endif
+=======
+    |.  swc1 f20, 0(CRET1)
+>>>>>>> Stashed changes
     |
     |7:  // Possible table write barrier for the value. Skip valiswhite check.
     |  barrierback TAB:RB, TMP3, TMP0, <3
@@ -4313,13 +4943,21 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
     |  lw TMP1, HI(RC)
     |   lbu TMP3, TAB:RB->marked
     |  beq TMP1, TISNIL, >5
+<<<<<<< Updated upstream
+=======
+    |.  lwc1 f0, 0(RA)
+>>>>>>> Stashed changes
     |1:
     |.  lw SFRETHI, HI(RA)
     |    lw SFRETLO, LO(RA)
     |  andi AT, TMP3, LJ_GC_BLACK	// isblack(table)
     |   sw SFRETHI, HI(RC)
     |  bnez AT, >7
+<<<<<<< Updated upstream
     |.   sw SFRETLO, LO(RC)
+=======
+    |.  swc1 f0, 0(RC)
+>>>>>>> Stashed changes
     |2:
     |  ins_next
     |
@@ -4390,12 +5028,19 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
     |   addu TMP1, TMP1, CARG1
     |  andi TMP0, TMP3, LJ_GC_BLACK	// isblack(table)
     |3:  // Copy result slots to table.
+<<<<<<< Updated upstream
     |   lw SFRETHI, HI(RA)
     |    lw SFRETLO, LO(RA)
     |    addiu RA, RA, 8
     |  sltu AT, RA, TMP2
     |   sw SFRETHI, HI(TMP1)
     |    sw SFRETLO, LO(TMP1)
+=======
+    |   lwc1 f0, 0(RA)
+    |    addiu RA, RA, 8
+    |  sltu AT, RA, TMP2
+    |   swc1 f0, 0(TMP1)
+>>>>>>> Stashed changes
     |  bnez AT, <3
     |.   addiu TMP1, TMP1, 8
     |  bnez TMP0, >7
@@ -4470,12 +5115,19 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
     |  beqz NARGS8:RC, >3
     |.  move TMP3, NARGS8:RC
     |2:
+<<<<<<< Updated upstream
     |   lw SFRETHI, HI(RA)
     |    lw SFRETLO, LO(RA)
     |    addiu RA, RA, 8
     |  addiu TMP3, TMP3, -8
     |   sw SFRETHI, HI(TMP2)
     |    sw SFRETLO, LO(TMP2)
+=======
+    |   lwc1 f0, 0(RA)
+    |    addiu RA, RA, 8
+    |  addiu TMP3, TMP3, -8
+    |   swc1 f0, 0(TMP2)
+>>>>>>> Stashed changes
     |  bnez TMP3, <2
     |.   addiu TMP2, TMP2, 8
     |3:
@@ -4512,6 +5164,7 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
     |   li AT, LJ_TFUNC
     |  lw TMP1, -24+HI(BASE)
     |   lw LFUNC:RB, -24+LO(BASE)
+<<<<<<< Updated upstream
     |    lw SFARG1HI, -16+HI(BASE)
     |     lw SFARG1LO, -16+LO(BASE)
     |    lw SFARG2HI, -8+HI(BASE)
@@ -4522,6 +5175,14 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
     |     sw SFARG1LO, 8+LO(BASE)
     |    sw SFARG2HI, 16+HI(BASE)	// Copy control var.
     |     sw SFARG2LO, 16+LO(BASE)
+=======
+    |    lwc1 f2, -8(BASE)
+    |    lwc1 f0, -16(BASE)
+    |  sw TMP1, HI(BASE)		// Copy callable.
+    |   sw LFUNC:RB, LO(BASE)
+    |    swc1 f2, 16(BASE)		// Copy control var.
+    |    swc1 f0, 8(BASE)		// Copy state.
+>>>>>>> Stashed changes
     |   addiu BASE, BASE, 8
     |  bne TMP1, AT, ->vmeta_call
     |.  li NARGS8:RC, 16		// Iterators get 2 arguments.
@@ -4544,8 +5205,14 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
     |  beqz AT, >5			// Index points after array part?
     |.  sll TMP3, RC, 3
     |  addu TMP3, TMP1, TMP3
+<<<<<<< Updated upstream
     |  lw SFARG1HI, HI(TMP3)
     |   lw SFARG1LO, LO(TMP3)
+=======
+    |  lw TMP2, HI(TMP3)
+    |   lwc1 f0, 0(TMP3)
+    |    mtc1 RC, f2
+>>>>>>> Stashed changes
     |     lhu RD, -4+OFS_RD(PC)
     |  sw TISNUM, HI(RA)
     |   sw RC, LO(RA)
@@ -4554,10 +5221,18 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
     |  sw SFARG1HI, 8+HI(RA)
     |   sw SFARG1LO, 8+LO(RA)
     |     lui TMP3, (-(BCBIAS_J*4 >> 16) & 65535)
+<<<<<<< Updated upstream
+=======
+    |   swc1 f0, 8(RA)
+>>>>>>> Stashed changes
     |     decode_RD4b RD
     |     addu RD, RD, TMP3
     |   sw RC, -8+LO(RA)		// Update control var.
     |     addu PC, PC, RD
+<<<<<<< Updated upstream
+=======
+    |    swc1 f2, 0(RA)
+>>>>>>> Stashed changes
     |3:
     |  ins_next
     |
@@ -4572,11 +5247,17 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
     |   sll RB, RC, 3
     |   subu TMP3, TMP3, RB
     |  addu NODE:TMP3, TMP3, TMP2
+<<<<<<< Updated upstream
     |  lw SFARG1HI, NODE:TMP3->val.u32.hi
     |   lw SFARG1LO, NODE:TMP3->val.u32.lo
+=======
+    |  lw RB, HI(NODE:TMP3)
+    |  lwc1 f0, 0(NODE:TMP3)
+>>>>>>> Stashed changes
     |     lhu RD, -4+OFS_RD(PC)
     |  beq SFARG1HI, TISNIL, <6		// Skip holes in hash part.
     |.  addiu RC, RC, 1
+<<<<<<< Updated upstream
     |  lw SFARG2HI, NODE:TMP3->key.u32.hi
     |   lw SFARG2LO, NODE:TMP3->key.u32.lo
     |     lui TMP3, (-(BCBIAS_J*4 >> 16) & 65535)
@@ -4587,6 +5268,15 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
     |     addu RD, RD, TMP3
     |  sw SFARG2HI, HI(RA)
     |   sw SFARG2LO, LO(RA)
+=======
+    |   lwc1 f2, NODE:TMP3->key
+    |     lui TMP3, (-(BCBIAS_J*4 >> 16) & 65535)
+    |  swc1 f0, 8(RA)
+    |    addu RC, RC, TMP0
+    |     decode_RD4b RD
+    |     addu RD, RD, TMP3
+    |   swc1 f2, 0(RA)
+>>>>>>> Stashed changes
     |     addu PC, PC, RD
     |  b <3
     |.  sw RC, -8+LO(RA)		// Update control var.
@@ -4666,11 +5356,17 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
     |  bnez AT, >7
     |.  addiu MULTRES, TMP1, 8
     |6:
+<<<<<<< Updated upstream
     |  lw SFRETHI, HI(RC)
     |   lw SFRETLO, LO(RC)
     |   addiu RC, RC, 8
     |  sw SFRETHI, HI(RA)
     |   sw SFRETLO, LO(RA)
+=======
+    |  lwc1 f0, 0(RC)
+    |   addiu RC, RC, 8
+    |  swc1 f0, 0(RA)
+>>>>>>> Stashed changes
     |  sltu AT, RC, TMP3
     |  bnez AT, <6			// More vararg slots?
     |.  addiu RA, RA, 8
@@ -4726,12 +5422,19 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
     |  beqz RC, >3
     |.  subu BASE, TMP2, TMP0
     |2:
+<<<<<<< Updated upstream
     |   lw SFRETHI, HI(RA)
     |    lw SFRETLO, LO(RA)
     |    addiu RA, RA, 8
     |  addiu RC, RC, -8
     |   sw SFRETHI, HI(TMP2)
     |    sw SFRETLO, LO(TMP2)
+=======
+    |   lwc1 f0, 0(RA)
+    |    addiu RA, RA, 8
+    |  addiu RC, RC, -8
+    |   swc1 f0, 0(TMP2)
+>>>>>>> Stashed changes
     |  bnez RC, <2
     |.   addiu TMP2, TMP2, 8
     |3:
@@ -4772,16 +5475,24 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
     |  lw INS, -4(PC)
     |   addiu TMP2, BASE, -8
     if (op == BC_RET1) {
+<<<<<<< Updated upstream
       |  lw SFRETHI, HI(RA)
       |   lw SFRETLO, LO(RA)
+=======
+      |  lwc1 f0, 0(RA)
+>>>>>>> Stashed changes
     }
     |  decode_RB8a RB, INS
     |   decode_RA8a RA, INS
     |  decode_RB8b RB
     |   decode_RA8b RA
     if (op == BC_RET1) {
+<<<<<<< Updated upstream
       |  sw SFRETHI, HI(TMP2)
       |   sw SFRETLO, LO(TMP2)
+=======
+      |  swc1 f0, 0(TMP2)
+>>>>>>> Stashed changes
     }
     |   subu BASE, TMP2, RA
     |5:
@@ -4823,8 +5534,31 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
     |  // RA = base*8, RD = target (after end of loop or start of loop)
     vk = (op == BC_IFORL || op == BC_JFORL);
     |  addu RA, BASE, RA
+<<<<<<< Updated upstream
     |  lw SFARG1HI, FORL_IDX*8+HI(RA)
     |   lw SFARG1LO, FORL_IDX*8+LO(RA)
+=======
+    if (vk) {
+      |  lwc1 f0, FORL_IDX*8(RA)
+      |  lwc1 f4, FORL_STEP*8(RA)
+      |  lwc1 f2, FORL_STOP*8(RA)
+      |   lw TMP3, FORL_STEP*8+HI(RA)
+      |  add.d f0, f0, f4
+      |  swc1 f0, FORL_IDX*8(RA)
+    } else {
+      |  lw TMP1, FORL_IDX*8+HI(RA)
+      |  lw TMP3, FORL_STEP*8+HI(RA)
+      |  lw TMP2, FORL_STOP*8+HI(RA)
+      |  sltiu TMP1, TMP1, LJ_TISNUM
+      |  sltiu TMP0, TMP3, LJ_TISNUM
+      |  sltiu TMP2, TMP2, LJ_TISNUM
+      |  and TMP1, TMP1, TMP0
+      |  and TMP1, TMP1, TMP2
+      |   lwc1 f0, FORL_IDX*8(RA)
+      |  beqz TMP1, ->vmeta_for
+      |.  lwc1 f2, FORL_STOP*8(RA)
+    }
+>>>>>>> Stashed changes
     if (op != BC_JFORL) {
       |  srl RD, RD, 1
       |  lui TMP2, (-(BCBIAS_J*4 >> 16) & 65535)
@@ -4875,10 +5609,16 @@ static void build_ins(BuildCtx *ctx, BCOp op, int defop)
       |  sw SFARG1HI, FORL_IDX*8+HI(RA)
       |   sw SFARG1LO, FORL_IDX*8+LO(RA)
     }
+<<<<<<< Updated upstream
     |  ins_next1
     |  sw SFARG1HI, FORL_EXT*8+HI(RA)
     |   sw SFARG1LO, FORL_EXT*8+LO(RA)
     |2:
+=======
+    |  c.le.d 0, f0, f2
+    |  c.le.d 1, f2, f0
+    |  swc1 f0, FORL_EXT*8(RA)
+>>>>>>> Stashed changes
     if (op == BC_JFORI) {
       |  beqz CRET1, =>BC_JLOOP
       |.  decode_RD8b RD

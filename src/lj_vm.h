@@ -37,9 +37,9 @@ LJ_ASMF int lj_vm_cpuid(uint32_t f, uint32_t res[4]);
 #if LJ_TARGET_PPC
 void lj_vm_cachesync(void *start, void *end);
 #endif
-LJ_ASMF double lj_vm_foldarith(double x, double y, int op);
+LJ_ASMF float lj_vm_foldarith(float x, float y, int op);
 #if LJ_HASJIT
-LJ_ASMF double lj_vm_foldfpm(double x, int op);
+LJ_ASMF float lj_vm_foldfpm(float x, int op);
 #endif
 #if !LJ_ARCH_HASFPU
 /* Declared in lj_obj.h: LJ_ASMF int32_t lj_vm_tobit(double x); */
@@ -61,15 +61,20 @@ LJ_ASMF void lj_vm_exit_interp(void);
 #define lj_vm_floor	floor
 #define lj_vm_ceil	ceil
 #else
-LJ_ASMF double lj_vm_floor(double);
-LJ_ASMF double lj_vm_ceil(double);
+LJ_ASMF float lj_vm_floor(float);
+LJ_ASMF float lj_vm_ceil(float);
 #if LJ_TARGET_ARM
 LJ_ASMF double lj_vm_floor_sf(double);
 LJ_ASMF double lj_vm_ceil_sf(double);
 #endif
 #endif
+<<<<<<< Updated upstream
 #ifdef LUAJIT_NO_LOG2
 LJ_ASMF double lj_vm_log2(double);
+=======
+#if defined(LUAJIT_NO_LOG2) || LJ_TARGET_X86ORX64
+LJ_ASMF float lj_vm_log2(float);
+>>>>>>> Stashed changes
 #else
 #define lj_vm_log2	log2
 #endif
@@ -90,11 +95,22 @@ LJ_ASMF double lj_vm_powi(double, int32_t);
 #if LJ_TARGET_PPC || LJ_TARGET_ARM64
 #define lj_vm_trunc	trunc
 #else
-LJ_ASMF double lj_vm_trunc(double);
+LJ_ASMF float lj_vm_trunc(float);
 #if LJ_TARGET_ARM
 LJ_ASMF double lj_vm_trunc_sf(double);
 #endif
 #endif
+<<<<<<< Updated upstream
+=======
+LJ_ASMF float lj_vm_powi(float, int32_t);
+#ifdef LUAJIT_NO_EXP2
+LJ_ASMF float lj_vm_exp2(float);
+#else
+#define lj_vm_exp2	exp2
+#endif
+#endif
+LJ_ASMF int32_t LJ_FASTCALL lj_vm_modi(int32_t, int32_t);
+>>>>>>> Stashed changes
 #if LJ_HASFFI
 LJ_ASMF int lj_vm_errno(void);
 #endif

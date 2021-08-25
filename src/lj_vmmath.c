@@ -34,9 +34,14 @@ LJ_FUNCA double lj_wrap_pow(double x, double y) { return pow(x, y); }
 LJ_FUNCA double lj_wrap_fmod(double x, double y) { return fmod(x, y); }
 #endif
 
+<<<<<<< Updated upstream
 /* -- Helper functions for generated machine code ------------------------- */
 
 double lj_vm_foldarith(double x, double y, int op)
+=======
+#if !LJ_TARGET_X86ORX64
+float lj_vm_foldarith(float x, float y, int op)
+>>>>>>> Stashed changes
 {
   switch (op) {
   case IR_ADD - IR_ADD: return x+y; break;
@@ -56,7 +61,25 @@ double lj_vm_foldarith(double x, double y, int op)
   }
 }
 
+<<<<<<< Updated upstream
 #if (LJ_HASJIT && !(LJ_TARGET_ARM || LJ_TARGET_ARM64 || LJ_TARGET_PPC)) || LJ_TARGET_MIPS
+=======
+#ifdef LUAJIT_NO_LOG2
+float lj_vm_log2(float a)
+{
+  return log(a) * 1.4426950408889634074;
+}
+#endif
+
+#ifdef LUAJIT_NO_EXP2
+float lj_vm_exp2(float a)
+{
+  return exp(a * 0.6931471805599453);
+}
+#endif
+
+#if !(LJ_TARGET_ARM || LJ_TARGET_PPC)
+>>>>>>> Stashed changes
 int32_t LJ_FASTCALL lj_vm_modi(int32_t a, int32_t b)
 {
   uint32_t y, ua, ub;
@@ -82,10 +105,15 @@ double lj_vm_log2(double a)
 
 #if !LJ_TARGET_X86ORX64
 /* Unsigned x^k. */
-static double lj_vm_powui(double x, uint32_t k)
+static float lj_vm_powui(float x, uint32_t k)
 {
+<<<<<<< Updated upstream
   double y;
   lj_assertX(k != 0, "pow with zero exponent");
+=======
+  float y;
+  lua_assert(k != 0);
+>>>>>>> Stashed changes
   for (; (k & 1) == 0; k >>= 1) x *= x;
   y = x;
   if ((k >>= 1) != 0) {
@@ -101,7 +129,7 @@ static double lj_vm_powui(double x, uint32_t k)
 }
 
 /* Signed x^k. */
-double lj_vm_powi(double x, int32_t k)
+float lj_vm_powi(float x, int32_t k)
 {
   if (k > 1)
     return lj_vm_powui(x, (uint32_t)k);
@@ -115,7 +143,7 @@ double lj_vm_powi(double x, int32_t k)
 #endif
 
 /* Computes fpm(x) for extended math functions. */
-double lj_vm_foldfpm(double x, int fpm)
+float lj_vm_foldfpm(float x, int fpm)
 {
   switch (fpm) {
   case IRFPM_FLOOR: return lj_vm_floor(x);

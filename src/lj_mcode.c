@@ -45,8 +45,15 @@ void lj_mcode_sync(void *start, void *end)
   sys_icache_invalidate(start, (char *)end-(char *)start);
 #elif LJ_TARGET_PPC
   lj_vm_cachesync(start, end);
+<<<<<<< Updated upstream
 #elif defined(__GNUC__) || defined(__clang__)
   __clear_cache(start, end);
+=======
+#elif defined(__GNUC__)
+  UNUSED(start); UNUSED(end);
+  //FlushCache(0);
+  //__clear_cache(start, end);
+>>>>>>> Stashed changes
 #else
 #error "Missing builtin to flush instruction cache"
 #endif
